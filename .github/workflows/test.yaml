@@ -1,0 +1,13 @@
+name: Test
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  prosody-0.12:
+      name: Test prosody 0.12
+      runs-on: ubuntu-24.04
+      steps:
+        - name: Test
+          run: |
+            echo
