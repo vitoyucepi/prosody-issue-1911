@@ -8,8 +8,8 @@ jobs:
       name: Test prosody 0.12
       runs-on: ubuntu-24.04
       steps:
-        - uses: "actions/checkout"
-        - uses: "hoverkraft-tech/compose-action"
+        - uses: actions/checkout@v4.2.2
+        - uses: hoverkraft-tech/compose-action@v2.2.0
           env:
             PROSODY_VERSION: "0.12"
         - name: Test
