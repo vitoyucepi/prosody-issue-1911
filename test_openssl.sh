@@ -34,10 +34,10 @@ print_status() {
     local host=$2
     local subject=$3
     if check_subject "$host" "$subject"; then
-      echo "Success: $address:$port with hostname $host."
+      echo "Success: $address with hostname $host."
       return 0
     else
-      echo "Fail: $address:$port with hostname $host, got $subject"
+      echo "Fail: $address with hostname $host, got $subject"
       return 1
     fi
 }
