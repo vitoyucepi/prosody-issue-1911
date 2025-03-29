@@ -10,6 +10,8 @@ jobs:
       steps:
         - uses: actions/checkout@v4.2.2
         - uses: hoverkraft-tech/compose-action@v2.2.0
+          with:
+            compose-file: "./compose.yaml"
           env:
             PROSODY_VERSION: "0.12"
         - name: Test
