@@ -16,8 +16,8 @@ jobs:
             PROSODY_VERSION: "0.12"
         - name: Test
           run: |
-            openssl s_client -connect 127.0.0.1:5222 -starttls xmpp -xmpphost prosody.test -showcerts < /dev/null | grep subject
-            openssl s_client -connect 127.0.0.1:5223 -servername prosody.test -showcerts < /dev/null
-            openssl s_client -connect 127.0.0.1:5269 -starttls xmpp-server -xmpphost prosody.test -showcerts < /dev/null
-            openssl s_client -connect 127.0.0.1:5270 -servername prosody.test -showcerts < /dev/null
-            openssl s_client -connect 127.0.0.1:5281 -servername prosody.test -showcerts < /dev/null
+            openssl s_client -connect 127.0.0.1:5222 -starttls xmpp -xmpphost prosody.test -showcerts < /dev/null 2>&1 | grep subject
+            openssl s_client -connect 127.0.0.1:5223 -servername prosody.test -showcerts < /dev/null 2>&1 | grep subject
+            openssl s_client -connect 127.0.0.1:5269 -starttls xmpp-server -xmpphost prosody.test -showcerts < /dev/null 2>&1 | grep subject
+            openssl s_client -connect 127.0.0.1:5270 -servername prosody.test -showcerts < /dev/null 2>&1 | grep subject
+            openssl s_client -connect 127.0.0.1:5281 -servername prosody.test -showcerts < /dev/null 2>&1 | grep subject
