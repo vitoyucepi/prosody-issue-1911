@@ -17,3 +17,16 @@ jobs:
         - name: Test
           run: |
             sh test_openssl.sh
+  prosody-13_0:
+      name: Test prosody 13.0
+      runs-on: ubuntu-24.04
+      steps:
+        - uses: actions/checkout@v4.2.2
+        - uses: hoverkraft-tech/compose-action@v2.2.0
+          with:
+            compose-file: "./compose.yaml"
+          env:
+            PROSODY_VERSION: "13.0"
+        - name: Test
+          run: |
+            sh test_openssl.sh

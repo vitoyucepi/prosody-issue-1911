@@ -19,7 +19,7 @@ test_tls() {
 main() {
     xmpp_client_starttls=$(test_starttls 5222 prosody.test | get_subject)
     xmpp_server_starttls=$(test_starttls 5269 prosody.test | get_subject)
-    xmpp_client_tls=$(xmpp_test_tls 5223 prosody.test | get_subject)
+    xmpp_client_tls=$(test_tls 5223 prosody.test | get_subject)
     xmpp_server_tls=$(test_tls 5270 prosody.test | get_subject)
     https=$(test_tls 5281 prosody.test | get_subject)
 
