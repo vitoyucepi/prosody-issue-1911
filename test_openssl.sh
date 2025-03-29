@@ -22,8 +22,10 @@ check_subject() {
     case "$actual" in
         *$expected* )
             return 1
+            ;;
         *)
             return 0
+            ;;
     esac
 }
 
