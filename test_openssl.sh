@@ -34,9 +34,11 @@ print_status() {
     host=$2
     subject=$3
     if check_subject "$host" "$subject"; then
-      "Success: $address:$port with hostname $host."
+      echo "Success: $address:$port with hostname $host."
+      return 0
     else
-      "Fail: $address:$port with hostname $host, got $subject"
+      echo "Fail: $address:$port with hostname $host, got $subject"
+      return 1
     fi
 }
 
@@ -46,19 +48,24 @@ check_server() {
     xmpp_ports=$3
     xmpps_ports=$4
     https_ports=$5
+
+    status=0
     for port in $xmpp_ports; do
         subject=$(test_starttls "$address:$port" "$host" | get_subject)
-        print_status "$address:$port" "$host" "$subject"
+        print_status "$address:$port" "$host" "$subject" || status=1
     done
     for port in $xmpps_ports $https_ports; do
         subject=$(test_tls "$address:$port" "$host" | get_subject)
-        print_status "$address:$port" "$host" "$subject"
+        print_status "$address:$port" "$host" "$subject" || status=1
     done
+    return $status
 }
 
 main() {
-    check_server '127.0.0.1' 'prosody.test' '5222 5269' '5223 5270' '5281'
-    check_server 'google.com' 'google.com' '' '' '443'
+    status=0
+    check_server '127.0.0.1' 'prosody.test' '5222 5269' '5223 5270' '5281' || status=1
+    check_server 'google.com' 'google.com' '' '' '443' || status=1
+    return $status
 }
 
 main "$@"
