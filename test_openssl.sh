@@ -29,7 +29,7 @@ check_subject() {
     esac
 }
 
-check_sevrer() {
+check_server() {
     address=$1
     host=$2
     xmpp_ports=$3
