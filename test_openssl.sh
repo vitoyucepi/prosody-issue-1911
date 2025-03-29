@@ -21,12 +21,23 @@ check_subject() {
     actual=$2
     case "$actual" in
         *$expected* )
-            return 1
-            ;;
-        *)
             return 0
             ;;
+        *)
+            return 1
+            ;;
     esac
+}
+
+print_status() {
+    address=$1
+    host=$2
+    subject=$3
+    if check_subject "$host" "$subject"; then
+      "Success: $address:$port with hostname $host."
+    else
+      "Fail: $address:$port with hostname $host, got $subject"
+    fi
 }
 
 check_server() {
@@ -37,19 +48,11 @@ check_server() {
     https_ports=$5
     for port in $xmpp_ports; do
         subject=$(test_starttls "$address:$port" "$host" | get_subject)
-        if check_subject "$address" "$subject"; then
-            echo "1 $address $port $subject"
-        else
-            echo "2 $address $port $subject"
-        fi
+        print_status "$address:$port" "$host" "$subject"
     done
     for port in $xmpps_ports $https_ports; do
         subject=$(test_tls "$address:$port" "$host" | get_subject)
-        if check_subject "$address" "$subject"; then
-            echo "1 $address $port $subject"
-        else
-            echo "2 $address $port $subject"
-        fi
+        print_status "$address:$port" "$host" "$subject"
     done
 }
 
