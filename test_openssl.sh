@@ -53,12 +53,10 @@ check_server() {
     for port in $xmpp_ports; do
         subject=$(test_starttls "$address:$port" "$host" | get_subject)
         print_status "$address:$port" "$host" "$subject" || status=1
-        echo "$address:$port $status"
     done
     for port in $xmpps_ports $https_ports; do
         subject=$(test_tls "$address:$port" "$host" | get_subject)
         print_status "$address:$port" "$host" "$subject" || status=1
-        echo "$address:$port $status"
     done
     return $status
 }
