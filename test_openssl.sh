@@ -5,29 +5,55 @@ get_subject() {
 }
 
 test_starttls() {
-    port=$1
+    address=$1
     host=$2
-    openssl s_client -connect 127.0.0.1:"$port" -starttls xmpp -xmpphost "$host" -showcerts </dev/null 2>&1
+    openssl s_client -connect "$address" -starttls xmpp -xmpphost "$host" -showcerts </dev/null 2>&1
 }
 
 test_tls() {
-    port=$1
+    address=$1
     host=$2
-    openssl s_client -connect 127.0.0.1:"$port" -servername "$host" -showcerts </dev/null 2>&1
+    openssl s_client -connect "$address" -servername "$host" -showcerts </dev/null 2>&1
+}
+
+check_subject() {
+    expected=$1
+    actual=$2
+    case "$actual" in
+        *$expected* )
+            return 1
+        *)
+            return 0
+    esac
+}
+
+check_sevrer() {
+    address=$1
+    host=$2
+    xmpp_ports=$3
+    xmpps_ports=$4
+    https_ports=$5
+    for port in $xmpp_ports; do
+        subject=$(test_starttls "$address:$port" "$host" | get_subject)
+        if check_subject "$address" "$subject"; then
+            echo "1 $address $port $subject"
+        else
+            echo "2 $address $port $subject"
+        fi
+    done
+    for port in $xmpps_ports $https_ports; do
+        subject=$(test_tls "$address:$port" "$host" | get_subject)
+        if check_subject "$address" "$subject"; then
+            echo "1 $address $port $subject"
+        else
+            echo "2 $address $port $subject"
+        fi
+    done
 }
 
 main() {
-    xmpp_client_starttls=$(test_starttls 5222 prosody.test | get_subject)
-    xmpp_server_starttls=$(test_starttls 5269 prosody.test | get_subject)
-    xmpp_client_tls=$(test_tls 5223 prosody.test | get_subject)
-    xmpp_server_tls=$(test_tls 5270 prosody.test | get_subject)
-    https=$(test_tls 5281 prosody.test | get_subject)
-
-    echo "XMPP c2s connection on port 5222 using starttls, expected 'CN = prosody.test', got '$xmpp_client_starttls'"
-    echo "XMPP c2s connection on port 5223 using direct tls, expected 'CN = prosody.test', got '$xmpp_client_tls'"
-    echo "XMPP s2s connection on port 5269 using starttls, expected 'CN = prosody.test', got '$xmpp_server_starttls'"
-    echo "XMPP s2s connection on port 5270 using direct tls, expected 'CN = prosody.test', got '$xmpp_server_tls'"
-    echo "HTTPS connection on port 5281, expected 'CN = prosody.test', got '$https'"
+    check_server '127.0.0.1' 'prosody.test' '5222 5269' '5223 5270' '5281'
+    check_server 'google.com' 'google.com' '' '' '443'
 }
 
 main "$@"
