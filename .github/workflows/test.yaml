@@ -16,13 +16,4 @@ jobs:
             PROSODY_VERSION: "0.12"
         - name: Test
           run: |
-            xmpp_client_starttls=$(openssl s_client -connect 127.0.0.1:5222 -starttls xmpp -xmpphost prosody.test -showcerts < /dev/null 2>&1 | grep subject)
-            xmpp_client_tls=$(openssl s_client -connect 127.0.0.1:5223 -servername prosody.test -showcerts < /dev/null 2>&1 | grep subject)
-            xmpp_server_starttls=$(openssl s_client -connect 127.0.0.1:5269 -starttls xmpp-server -xmpphost prosody.test -showcerts < /dev/null 2>&1 | grep subject)
-            xmpp_server_tls=$(openssl s_client -connect 127.0.0.1:5270 -servername prosody.test -showcerts < /dev/null 2>&1 | grep subject)
-            https=$(openssl s_client -connect 127.0.0.1:5281 -servername prosody.test -showcerts < /dev/null 2>&1 | grep subject)
-            echo "XMPP c2s connection on port 5222 using starttls, expected 'prosody.test', got '$xmpp_client_starttls'"
-            echo "XMPP c2s connection on port 5223 using direct tls, expected 'prosody.test', got '$xmpp_client_tls'"
-            echo "XMPP s2s connection on port 5269 using starttls, expected 'prosody.test', got '$xmpp_server_starttls'"
-            echo "XMPP s2s connection on port 5270 using direct tls, expected 'prosody.test', got '$xmpp_server_tls'"
-            echo "HTTPS connection on port 5281, expected 'prosody.test', got '$https'"
+            sh test_openssl.sh
