@@ -1,0 +1,24 @@
+services:
+  prosody:
+    image: "prosodyim/prosody:${PROSODY_VERSION}"
+    restart: always
+    ports:
+      - "5222:5222"
+      - "5223:5223"
+      - "5269:5269"
+      - "5270:5270"
+      - "5280:5280"
+      - "5281:5281"
+    volumes:
+      - prosody_data:/var/lib/prosody
+      - ./conf.d:/etc/prosody/conf.d
+      - ./certs:/etc/prosody/certs
+    environment:
+      LOCAL: root
+      DOMAIN: prosody.test
+      PASSWORD: root
+      PROSODY_ADMINS: root@prosody.test
+      PROSODY_CERTIFICATES: /path/does/not/exist
+
+volumes:
+  prosody_data: {}
